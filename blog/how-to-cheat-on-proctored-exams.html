@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <title>How To Cheat On Proctored Exams - Justin025</title>
+    <link rel="stylesheet" href="../assets/style.css">
+    <link rel="shortcut icon" href="../assets/favicon.png">
+    <link href="../rss.xml" rel="alternate" title="Justin025’s RSS feed" type="application/atom+xml">
+    <meta  content="./how-to-cheat-on-proctored-exams-img1.png">
+    <meta  content="How To Cheat On Proctored Exams">
+    <meta  content="website">
+    <meta  content="https://justin025.github.io">
+    <meta  content="Justin025">
+    <meta  content="A guide on how to bypass ProctorU's VM detection to run external software during an exam.">
+    <meta name="description" content="A guide on how to bypass ProctorU's VM detection to run external software during an exam.">
+    <meta name="theme-color" content="#333">
+    <meta name="msapplication-navbutton-color" content="#333">
+    <meta name="viewport" content="width=device-width">
+  </head>
+  <body>
+    <header>
+      <h1>
+	      Justin025
+        <a href="./rss.xml" class="rss-icon" type="application/atom+xml" title="Justin025’s RSS feed">
+          <img src="../assets/rss.svg" />
+        </a>
+      </h1>
+      <nav>
+        <ul>
+          <li>
+            <a href="../index.html">Blog</a>
+          </li>
+          <li>
+            <a href="../services.html">Services</a>
+          </li>
+          <li>
+            <a href="../reading.html">Reading</a>
+          </li>
+          <li>
+            <a href="../about.html" rel="author">About</a>
+          </li>
+        </ul>
+      </nav>
+    </header>
+    <div>
+      <header>
+        <h1>How To Cheat On Proctored Exams</h1>
+        <time datetime="2025-1-23T18:32:12+05:00">23 January 2025</time>
+
+        <p>
+          <em>Spyware is not the solution to an unengaging curriculum.</em>
+        </p>
+
+      </header>
+
+      <section>
+        <div>
+          <figure>
+            <picture>
+              <source type="image/png" srcset="./how-to-cheat-on-proctored-exams-img1.png" />
+              <img src="./how-to-cheat-on-proctored-exams-img1.png" width="500" height="375" alt="ProctorU Logo" />
+            </picture>
+            <figcaption>ProctorU Logo</figcaption>
+          </figure>
+
+          <div>
+            <p>Since I first had the pleasure of installing ProctorU, I hated <em>everything</em> about it. For the lucky few who have never taken a proctored exam online, the experience is far more anxiety inducing than any exam or test I've completed in person. The proctor will ask for a copy of your ID, a scan of your face, and thereafter they will request to look around your room; although the worst is yet to come. To ensure the student isn't cheating, what is for lack of a better word, a 'rootkit' is installed onto your computer to allow the proctor to modify settings and scan your device for various signs of 'cheating'. If alarm bells are not ringing in your head after that description, they should be.</p>
+
+            <p>From what I'd heard, ProctorU's LogMeInRescue had virtual machine detection and so I was forced to install Windows for my first exam, but not without setting up a network sniffer first. After multiple rescheduled exams, along with countless hours digging through logs, compiling custom builds of QEMU, and procrastinating any studying whatsoever I had finally found a solution to my problem. The macOS version of ProctorU is unable to detect a properly masked virtual machine. After coming to this conclusion I did what any normal student would do... but before getting into the results let me first explain how to set up your own undetectable macOS virtual machine.</p>
+
+            <p>Instead of writing things from scratch this project relies on <a href='https://github.com/kholia/OSX-KVM'>OSX-KVM</a>. The code below clones the repo and its dependencies, and thereafter prepares your setup. Before running the code make sure kvm, qemu, and virt-manager are installed on your device.</p>
+
+            <figure class="highlight">
+              <code class="language-bash" data-lang="bash">
+                $ cd ~<br />
+                $ git clone --depth 1 --recursive https://github.com/kholia/OSX-KVM.git<br />
+                $ cd OSX-KVM<br />
+                <br />
+                $ sudo usermod -aG kvm $(whoami)<br />
+                $ sudo usermod -aG libvirt $(whoami)<br />
+                $ sudo usermod -aG input $(whoami)<br />
+                <br />
+                # This script will fetch the Base System DMG from Apple's website and will ask which OS you prefer. I personally recommend Ventura and it will be used for the duration of this tutorial.<br />
+                $ ./fetch-macOS-v2.py<br />
+                <br />
+                $ cd ..<br />
+                $ git clone https://github.com/Lekensteyn/dmg2img.git<br />
+                $ cd dmg2img<br />
+                $ make<br />
+                $ ./dmg2img -i ../OSX-KVM/BaseSystem.dmg ../OSX-KVM/BaseSystem.img<br />
+                <br />
+                $ cd ../OSX-KVM<br />
+                $ qemu-img create -f qcow2 mac_hdd_ng.img 256G<br />
+                <br />
+                # Used to boot without virt-manager<br />
+                # ./OpenCore-Boot.sh<br />
+                <br />
+                # Move the OSX-KVM folder to your preferred location<br />
+                $ PATH=/path/to/OSX-KVM<br />
+                $ sed "s|/home/CHANGEME/OSX-KVM|$PATH|g" macOS-libvirt-Catalina.xml> macOS.xml<br />
+                $ virt-xml-validate macOS.xml<br />
+                $ virsh --connect qemu:///system define macOS.xml
+              </code>
+            </figure>
+
+            <p>After completing the commands above you should have macOS added to your instance of virt-manager. Boot into 'macOS Base System'. After booting open Disk Utility, erase your attached drive, and ensure the format selected is APFS. Once your done close Disk Utility, click 'Reinstall macOS Ventura', and run through the prompts. The process could take a couple hours to complete. Your <abbr title="Virtual Machine">VM</abbr> may reboot once finished. Once complete boot into 'macOS Installer', run through the setup prompts, and your <abbr title="Virtual Machine">VM</abbr> should be ready.</p>
+
+            <p>After having booted into your <abbr title="Virtual Machine">VM</abbr> for the first time you may notice that your mic, camera, and speakers are not connected by default. If you are trying to emulate an iMac or Mac Mini then you can simply plug in your USB perpetuals and skip to the next part of the setup. If you are trying to run this on a laptop you will need to install VoodooHDA and disable kext signing in csrutil. To do so you can follow the instructions below.</p>
+
+            <figure class="highlight">
+              <code class="language-bash" data-lang="bash">
+                # Boot into recovery mode<br />
+                # Press <kbd>Super+Shift+T</kbd> and in the terminal run:<br />
+                $ csrutil enable --without kext<br />
+                <br />
+                # Boot back into macOS, open the terminal, and run the following:<br />
+                $ sudo diskutil mount disk0s1<br />
+                <br />
+                # Now in Finder navigate to EFI/OC/config.plist and disable AppleALC. You can alternatively use <a href='https://mackie100projects.altervista.org/download-opencore-configurator/'>OpenCore Configurator</a> to edit the file using a GUI interface. Finally install VoodooHDA:<br />
+                <br />
+                $ curl -L -O https://sourceforge.net/projects/voodoohda/files/latest/download<br />
+                $ unzip download<br />
+                $ sudo chown -R root:wheel ./VoodooHDA.kext<br />
+                $ sudo kextutil -v ./VoodooHDA.kext<br />
+                <br />
+                # Now add a sound device to virt-manager, in my specific setup ICH9 works fine. You may also need to forward your USB Controller under PCI Host Device for webcams and microphones.
+              </code>
+            </figure>
+
+            <p>You will now need to apply patches to QEMU to remove its branding, I personally have experience with <a href='https://github.com/zhaodice/qemu-anti-detection'>qemu-anti-detection</a> and highly recommend their work. If you have gotten to this point and don’t know how to patch or compile QEMU, email me and I’ll walk you through the required steps or send you a binary.</p>
+
+            <p>Finally, back in the vm, you will need to install Google Chrome, or Firefox reskinned as Chrome. Test your setup and once you are ready you can begin your exam. Be warned the Guardian Browser does not work without hardware acceleration and will be extremely laggy, the proctor will assume you have an older device and begin the exam in Chrome.</p>
+
+            <h2>Has this setup been tried in production?</h2>
+
+            <p>The answer to the question above is, yes, numerous times. Although I do not condone cheating of any form, a student using a setup like this could very easily have their notes, a browser window, or even a chat app open while in the middle of their test. They could even share the VNC port to a remote computer or screenshare on the host <abbr title="Operating System">OS</abbr> using something like TeamViewer and have another student complete the exam in its entirety. The possibilities, quite literally, are endless.</p>
+
+            <blockquote>
+              Anyone can be a teacher, but very few teachers know how to teach.<br />
+              —
+              <cite class="h-card">Michael Panetta</cite>
+            </blockquote>
+
+            <p>The reason I wrote this article in the first place is not to provide a step-by-step instruction manual on how to get a perfect score in all your classes, but instead to point out the absolute lunacy of having students install software on their computers to confirm they are, infact, not cheating. If the above method didn't work I would have setup some sort of <abbr title="Man In The Middle">MITM</abbr> proxy to send back seemingly normal traffic in a standard Windows <abbr title="Virtual Machine">VM</abbr>, and if that did not work I would have found some other manner of bypassing the imposed restrictions. Of the students I've asked, 60% have admitted to cheating during their most recent exam; not using high tech solutions like I've mentioned but in most cases the method employed is as simple as having their phone outside the view of a proctor, using a bluetooth keyboard, or, as a last resort, using a washroom break to search up the answers to a given question. The solution to an epidemic of cheating students is not to install draconian spyware onto a personal device, but instead to make the course material more engaging and personal.</p>
+
+          </div>
+        </div>
+
+      </section>
+    </div>
+
+    <footer>
+      <p>
+        Did you spot a mistake? Ideas for improvements? Feel free to open a pull request on <a href="https://github.com/justin025/justin025.github.io" title="Suggest improvements by opening a pull request on Github">github</a>.
+      </p>
+    </footer>
+  </body>
+</html>

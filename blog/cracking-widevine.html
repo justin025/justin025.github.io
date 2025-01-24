@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <title>Cracking Widevine - Justin025</title>
+    <link rel="stylesheet" href="../assets/style.css">
+    <link rel="shortcut icon" href="../assets/favicon.png">
+    <link href="../rss.xml" rel="alternate" title="Justin025’s RSS feed" type="application/atom+xml">
+    <meta  content="./cracking-widevine-img1.webp">
+    <meta  content="Cracking Widevine">
+    <meta  content="website">
+    <meta  content="https://justin025.github.io">
+    <meta  content="Justin025">
+    <meta  content="An abstract on how DRM works and methods a user could employ to bypass imposed restrictions.">
+    <meta name="description" content="An abstract on how DRM works and methods a user could employ to bypass imposed restrictions.">
+    <meta name="theme-color" content="#333">
+    <meta name="msapplication-navbutton-color" content="#333">
+    <meta name="viewport" content="width=device-width">
+  </head>
+  <body>
+    <header>
+      <h1>
+	      Justin025
+        <a href="./rss.xml" class="rss-icon" type="application/atom+xml" title="Justin025’s RSS feed">
+          <img src="../assets/rss.svg" />
+        </a>
+      </h1>
+      <nav>
+        <ul>
+          <li>
+            <a href="../index.html">Blog</a>
+          </li>
+          <li>
+            <a href="../services.html">Services</a>
+          </li>
+          <li>
+            <a href="../reading.html">Reading</a>
+          </li>
+          <li>
+            <a href="../about.html" rel="author">About</a>
+          </li>
+        </ul>
+      </nav>
+    </header>
+    <div>
+      <header>
+        <h1>Cracking Widevine</h1>
+        <time datetime="2025-01-14T15:13:12+05:00">15 January 2025</time>
+
+        <p>
+          <em>It's not a bug, it's a feature.</em>
+        </p>
+
+      </header>
+
+      <section>
+        <div>
+          <figure>
+            <picture>
+              <source type="image/webp" srcset="./cracking-widevine-img1.webp" />
+              <img src="./cracking-widevine-img1.webp" width="500" height="375" alt="Widevine Logo" />
+            </picture>
+            <figcaption>Widevine Logo</figcaption>
+          </figure>
+
+          <div>
+
+            <p>Around the second week of August, in 2024, I had begun my search for a music downloader that would be able to rip my entire Spotify library without using YouTube. I had stumbled across casualsnek's <a href='https://github.com/casualsnek/onthespot'>onthespot</a> which seemed to be exactly what I was looking for, a slick GUI, the ability to manage your download queue in a clean list, and most importantly, the ability to rip files directly from Spotify's servers. I was thoroughly impressed, downloaded the app, inputted my credentials, and... received an error. After doing a bit of research it turns out Spotify depreciated standard authentication in their eSDK a couple weeks prior and looking at the commit log it seemed the developer had been missing for over a year at this point. I found a quick hack using <a href='https://github.com/dspearson/librespot-auth'>librespot-auth</a> to login and continue using the app but many users began requesting video tutorials and help installing the various required dependencies on their devices. So I forked the project adding the new login scheme, ironing out many bugs in the process, and adding additional music services. This is where my introduction to Widevine, Playready, and Fairplay began.</p>
+
+            <p>For those who don't have any experience in the field, <abbr title='Digital Rights Management'>DRM</abbr> at its core is an <em>obfuscation technique</em> employed by media providers to ensure their content is unable to be downloaded by the user. In a nutshell, the internet as we know it is merely a series of documents and files transferred to ones computer which our browser then interperts and displays to the user. In the case of YouTube or Soundcloud for instance, once you click play your computer will download the media file and begin playing its contents. You can verify this fact, and even download media yourself by pressing <kbd><abbr title="Control">CTRL</abbr>+SHIFT+I</kbd> on the webpage you would like to inspect. Navigate to the 'Network' tab, reload your page, and hit play again. You can watch your browser in real time process the page and you may even see the file url which you can open in a new tab and download.</p>
+
+            <p>DRM in the simplest sense aims to make the process of downloading media more difficult by obfuscating or encrypting the file so that even if the output is downloaded, it is useless to the user. The following link is an example of Get Lucky by Daft Punk in case you would like to see Deezer's inhouse DRM in action, you can download and listen to it <a href='https://files.catbox.moe/3gt8po.mp3'>here</a>. So then how exactly does Widevine work and why is it employed by every major media provider, from Spotify, to Disney, to Netflix?</p>
+
+            <figure>
+              <picture>
+                <source type="image/png" srcset="./cracking-widevine-img2.png" />
+                <img src="./cracking-widevine-img1.webp" width="800" height="375" alt="Diagram of the Widevine L1 Decryption Process" />
+              </picture>
+              <figcaption>Diagram of the Widevine L1 Decryption Process</figcaption>
+            </figure>
+
+            <p>Widevine protected content will have a PSSH in the header of the file which your device or browser will pick up on and begin the decryption process. Your device will then fetch your L1-L3 key, depending on the media and your configuration, and send the PSSH along with a challenge to the license server. If the credentials you sent in are correct, the license server will return a response which can be decrypted using your CDM to output the content decryption key and begin playing the video or song of your choosing. This is all a high level overview of quite a complex process. The ladder half of the question posed, why is this process employed by every major media provider, is quite simple. You are paying these organizations for a subscription and once you stop paying you lose access to their catalog. If a user was able to easily download 4k Netflix movies and upload them across the web very few people would remain subscribed. By utilizing centralized license servers and different decryption keys for each file, the entity can verify that only a certain list of whitelisted devices can play their content at its highest available qualities.</p>
+
+            <h2>So how does one go about downloading encrypted content?</h2>
+
+            <p>In my case I mimicked the API calls a normal user would make to decrypt content off Apple Music, Prime Video, and Crunchyroll to get a exact 1:1 copy of the original file. There are a number of other ways a normal user without any coding experience can get copies of <abbr title='Digital Rights Management'>DRM</abbr> protected content on their devices, one of the easiest being a simple screen recorder like <a href="https://obsproject.com/">OBS</a>. For more complex systems you can use a HDMI splitter that strips HDCP and record any content directly from your TV, similar to an old school <abbr title='Digital Video Recorder'>DVR</abbr>.</p>
+
+            <p>The biggest problem with Widevine, and all DRM systems for that matter, is that the content must be decrypted somewhere along the line for user consumption, and the moment it is decrypted a copy can be made. Widevine employs a number of obfuscation techniques such as running the decryption process using a proprietary <abbr title='Content Decryption Module'>CDM</abbr> and running said process inside a <abbr title='Trusted Execution Environment'>TEE</abbr> but all of this can be reverse engineered because for the decryption to occur the user's device must receive the associated keys, and this is its fatal flaw.</p>
+
+            <h2>Is there a solution to better protect copyrighted content?</h2>
+
+            <p>I've spent an unreasonable amount of time trying to come up with various ways to ensure a user cannot create copies of copyrighted material and haven't been able to come up with an acceptable answer to this question. After much consideration I would be inclined to answer no, or at the very least, not with the web standards that are currently in place. Is it possible that Widevine 2.0 may someday be released completely invalidating my arguments? It is possible, but I wouldn't hold my breath.</p>
+
+            <p>To leave the reader with a thought, during the couple months I'd spent working on OnTheSpot I've tried quite a number of music services and interestingly of the eight I'd tried Qobuz seemed to be my favourite. Unrelated to my decision Qobuz also does not encrypt their media using any form of DRM. It is my belief that quite a number of media conglomerants put too much focus on antipiracy measures and too little focus on what matters, that being the user experience. There would be no market for music downloaders if Spotify or Apple Music listened to user's complaints. Sadly many of these companies are now in a position where they redirect the bulk of their attention to profit margins and shareholders instead of user feedback; spending billions of dollars on DRM systems that are inherently flawed.</p>
+          </div>
+        </div>
+
+      </section>
+    </div>
+
+    <footer>
+      <p>
+        Did you spot a mistake? Ideas for improvements? Feel free to open a pull request on <a href="https://github.com/justin025/justin025.github.io" title="Suggest improvements by opening a pull request on Github">github</a>.
+      </p>
+    </footer>
+  </body>
+</html>

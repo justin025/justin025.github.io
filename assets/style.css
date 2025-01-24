@@ -1,0 +1,241 @@
+@font-face {
+  font-family: "Atkinson Hyperlegible";
+  font-style: normal;
+  font-display: swap;
+  src: url(./Atkinson-Hyperlegible-Regular-102a.woff2) format('woff2');
+  unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0300-0301,U+0303-0304,U+0308-0309,U+0323,U+0329,U+2000-206F,U+2074,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    //--color-accent-alt: #551a8b; /* visited link */
+    --color-accent-alt: #0367d8; /* visited link */
+    --color-accent: #0367d8; /* links */
+    --color-alert-background: #fff0f2;
+    --color-alert-foreground: #ff6577;
+    --color-background: #f1f1f1;
+    --color-box-background: #f7f7f7;
+    --color-box-border: #d4d4d4; /* code highlight */
+    --color-foreground: #00004d;
+    --color-muted: #6e6e6e;
+    --color-rss: #ee802f;
+    --color-star: #FFEB3B;
+    --image-filter: grayscale(0%) brightness(100%);
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    //--color-accent-alt: #0360c9;
+    --color-accent-alt: #81baff;
+    --color-accent: #81baff;
+    --color-alert-background: #322226;
+    --color-alert-foreground: #ff6577;
+    --color-background: #181a1b;
+    --color-box-background: #2c2c2c;
+    --color-box-border: #20242d;
+    --color-foreground: #eaeaea;
+    --color-muted: #96969c;
+    --color-rss: #ee802f;
+    --color-star: #FFEB3B;
+    --image-filter: grayscale(60%) brightness(85%);
+  }
+}
+
+
+/* Header */
+
+header {
+  text-align: center;
+}
+
+nav ul {
+  padding: 0;
+}
+
+nav li {
+  display: inline-block;
+  margin: 0 .5em;
+}
+
+header h1 {
+  font-size: 2em;
+  line-height: 1.2em;
+  text-wrap: balance;
+}
+
+
+/* General */
+
+body {
+  background-color: var(--color-background);
+  color: var(--color-foreground);
+  font-family: "Atkinson Hyperlegible", -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  line-height: 1.5em;
+  margin: 0 auto;
+  max-width: 670px;
+}
+
+@media only screen and (max-width: 767px) {
+  body {
+    padding: 0 .5em;
+  }
+}
+
+a {
+  color: var(--color-accent);
+}
+a:visited {
+  color: var(--color-accent-alt);
+}
+
+svg.rss {
+  stroke: var(--color-foreground);
+}
+
+svg.rss-accent {
+  stroke: var(--color-rss);
+}
+
+.alert {
+  font-size: 1em;
+  margin: 1em 0;
+}
+.alert p {
+  background-color: var(--color-alert-background);
+  box-decoration-break: clone;
+  color: var(--color-alert-foreground);
+  display: inline;
+  padding: .3em;
+}
+
+.strike {
+  text-decoration: line-through;
+}
+
+h2 time {
+  display: block;
+  text-align: right;
+}
+
+code {
+  padding: 1em 0;
+  line-height: 2em;
+  display: block;
+}
+
+/* Blog */
+
+figure, picture {
+  display: block;
+  margin: 0;
+  text-align: center;
+}
+
+figure img, picture img {
+  height: auto;
+  max-width: 100%;
+}
+
+figure.highlight {
+  background-color: var(--color-box-background);
+  border-radius: .4em;
+  border: 1px solid var(--color-box-border);
+  margin-left: 0;
+  margin-right: 0;
+  overflow-x: auto;
+  padding: 0 1em;
+  text-align: left;
+}
+
+figcaption {
+  color: var(--color-muted);
+}
+
+figcaption.highlight {
+  margin-top: 0em;
+}
+
+dt {
+  margin: .5em 0;
+}
+
+abbr[title] {
+  cursor: help;
+}
+
+blockquote, dd {
+  border-left: 3px solid var(--color-accent);
+  color: var(--color-accent);
+  margin-left: 0;
+  padding-left: .8em;
+}
+
+kbd {
+  background-color: var(--color-box-background);
+  border-radius: .4em;
+  border: 1px solid var(--color-box-border);
+  padding: .3em .4em;
+}
+
+hr {
+  border-width: 0;
+  border-top: 1px solid var(--color-box-border);
+}
+
+time[property="datePublished"] {
+  color: var(--color-muted);
+}
+
+img:not([src*=".svg"]) {
+  filter: var(--image-filter);
+}
+
+
+/* Reading Table */
+.table {
+  display: grid;
+  grid-column-gap: 1em;
+  grid-row-gap: 0;
+  grid-template-columns: 2fr 1fr min-content min-content;
+}
+
+.table section {
+  display: contents;
+}
+
+.table section * {
+  margin: .3em 0;
+}
+
+.table section h1, .table section p[property=author] {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.table section h1 {
+  font-size: 1em;
+  font-weight: unset;
+}
+
+@media only screen and (max-width: 767px) {
+  .table { grid-template-columns: 1fr }
+  .table section { display: unset }
+  .table section h1 { font-weight: bold }
+}
+
+
+/* Footer */
+
+footer {
+  color: var(--color-muted);
+}
+
+footer ul {
+  text-align: right;
+}
+footer li {
+  display: inline;
+  margin-left: 1em;
+}
